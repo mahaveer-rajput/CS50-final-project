@@ -1,11 +1,55 @@
 {% extends "layout.html" %}
 
-{% block body_bg %}
-background: linear-gradient(150deg, #0d1b2a, #1b263b, #415a77, #778da9);
-{% endblock %}
-
 {% block main %}
+<div class="backdrop">
+ <section class="hero">
 
- <div class="">index page</div>
+    <div class="hero-overlay"></div>
 
+    <div class="hero-content">
+
+        <h1>SIMPLY ART. SIMPLY BEAUTIFUL.</h1>
+
+        <p>
+            For seventeen years, artists and buyers have trusted Pixistan
+            to buy and sell art. Now find your perfect art.
+        </p>
+
+        <div class="search-box">
+
+            <input type="text" placeholder="Enter Keywords">
+
+            <select>
+                <option>All Art</option>
+                <option>Paintings</option>
+                <option>Photography</option>
+                <option>Digital Art</option>
+            </select>
+
+            <button>
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="gallery">
+
+    <h2 class="gallery-title">Featured Art</h2>
+
+    <div class="masonry-grid">
+
+        {% for image in images %}
+        <div class="masonry-item">
+            <img src="{{ url_for('static', filename='uploads/' + image) }}">
+        </div>
+        {% endfor %}
+
+    </div>
+
+</section>
+</div>
 {% endblock%}
