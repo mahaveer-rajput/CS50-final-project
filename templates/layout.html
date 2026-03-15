@@ -11,9 +11,11 @@
     <title>Document</title>
   </head>
   <body>
+    {% block content %}
     <header>{% include "components/navbar.html" %}</header>
     <main>{% block main %}{% endblock %}</main>
     <footer>{% include "components/footer.html" %}</footer>
+    {% endblock %}
   </body>
   <script src="static/js/script.js"></script>
 </html>

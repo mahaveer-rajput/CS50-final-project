@@ -42,9 +42,20 @@
 
     <div class="masonry-grid">
 
-        {% for image in images %}
+        {% for art in artworks %}
         <div class="masonry-item">
-            <img src="{{ url_for('static', filename='uploads/' + image) }}">
+            <div class="image-container">
+                <img src="/static/uploads/{{ art.image }}" alt="{{ art.title }}">
+
+                <div class="overlay">
+                    <h3>{{ art.title }}</h3>
+                    <p>{{ art.artist }}</p>
+                    <span><i class="fa-solid fa-heart"></i> likes</span>
+                    <p class="desc">{{ art.description }}</p>
+                </div>
+
+            </div>
+
         </div>
         {% endfor %}
 
