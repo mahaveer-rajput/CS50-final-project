@@ -36,11 +36,14 @@
     <div class="user-dropdown" id="userDropdown">
         <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
         <a href="{{ url_for('settings') }}"><i class="fa-solid fa-gear"></i> Settings</a>
+        <a href="{{ url_for('upload') }}" <i class="fa-solid fa-upload"></i> Upload</a>
         <a href="{{ url_for('logout') }}" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        
+
     </div>
 </div>
 </div>
-        <a href="/upload" class="glass-btn">Upload</a>
+        
       {% else %}
         <a href="/register" class="glass-btn">Join</a>
         <a href="/login" class="glass-btn">Login</a>
