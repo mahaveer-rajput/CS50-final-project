@@ -1,21 +1,78 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <link href="/static/css/style.css" rel="stylesheet" />
-    <title>Document</title>
-  </head>
-  <body>
-    {% block content %}
-    <header>{% include "components/navbar.html" %}</header>
-    <main>{% block main %}{% endblock %}</main>
-    <footer>{% include "components/footer.html" %}</footer>
-    {% endblock %}
-  </body>
-  <script src="static/js/script.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Main CSS -->
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+
+  <title>{% block title %}Pixistan Art Gallery{% endblock %}</title>
+</head>
+
+<body>
+
+  <!-- Navbar (always visible) -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <div class="logo">Pixistan <span>Art Gallery</span></div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#">About Us</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-right">
+      {% if session.get("user_id") %}
+        <div class="user-menu-wrapper">
+    <button class="user-btn" id="userBtn">
+        <img src="/static/uploads/pf.png" alt="User Avatar" class="avatar">
+        <span>Welcome! {{ session.get("username") }}</span>
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+        <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
+        <a href="{{ url_for('settings') }}"><i class="fa-solid fa-gear"></i> Settings</a>
+        <a href="{{ url_for('logout') }}" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+</div>
+</div>
+        <a href="/upload" class="glass-btn">Upload</a>
+      {% else %}
+        <a href="/register" class="glass-btn">Join</a>
+        <a href="/login" class="glass-btn">Login</a>
+      {% endif %}
+    </div>
+
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </nav>
+
+  <!-- Flash Messages (always on top) -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for msg in messages %}
+          <p class="flash-message">{{ msg }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Main content (always visible) -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    {% include "components/footer.html" %}
+  </footer>
+
+  <!-- JS -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
 </html>

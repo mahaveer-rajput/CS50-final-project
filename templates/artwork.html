@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artwork</title>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+  </head>
+  <body>
+    <section class="artwork-detail">
+      <div class="artwork-image">
+        <img
+          src="{{ url_for('static', filename='uploads/' ~ art['image']) }}"
+          alt="{{ art['title'] }}"
+        />
+      </div>
+
+      <div class="artwork-info">
+        <h1>{{ art['title'] }}</h1>
+        <p><strong>Artist:</strong> {{ art['artist'] }}</p>
+        <p><strong>Description:</strong> {{ art['description'] }}</p>
+      </div>
+    </section>
+  </body>
+</html>

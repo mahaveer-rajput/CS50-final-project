@@ -5,6 +5,24 @@ body {
 
 /* NAVBAR */
 
+/* login / signup nav */
+
+.auth-nav {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+    padding: 20px;
+}
+
+.flash-container {
+    text-align: center;
+}
+
+.flash-message {
+    color: red;
+    margin: 10px;
+}
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -87,7 +105,147 @@ body {
 .total {
     font-size: 14px;
 }
+/* anchor tages */
+.glass-btn {
+    display: inline-block;
+    padding: 10px 18px;
+    margin-left: 10px;
 
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 10px;
+
+    /* GLASS EFFECT */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    /* SHADOW */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+    transition: all 0.3s ease;
+}
+
+/* WRAPPER */
+.user-menu-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* BUTTON */
+.user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    width: 185px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.user-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* DROPDOWN MENU */
+.user-menu-wrapper {
+    position: relative;
+    display: inline-block;
+    left: 23rem;
+}
+
+/* BUTTON */
+.user-btn {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.user-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* DROPDOWN */
+.user-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    min-width: 180px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.25s ease;
+    z-index: 100;
+}
+
+/* SHOW DROPDOWN */
+.user-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* LINKS */
+.user-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.user-dropdown a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.user-dropdown a.logout {
+    color: #FF6666;
+}
+
+.user-dropdown a.logout:hover {
+    background: rgba(255, 102, 102, 0.2);
+}
 /* HAMBURGER */
 
 .hamburger {
@@ -135,115 +293,197 @@ body {
 
 
 /* HERO SECTION */
-
+/* HERO */
 .hero {
-    height: 500px;
-    background: url("/static/uploads/hero-bg.jpg") center/cover no-repeat;
     position: relative;
+    height: 95vh;
+    background: url('/static/uploads/hero-bg.jpg') center/cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: white;
 }
-
-/* dark overlay */
 
 .hero-overlay {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.35);
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7));
 }
-
-/* content */
 
 .hero-content {
     position: relative;
-    max-width: 900px;
+    color: white;
+    max-width: 750px;
     padding: 20px;
+    animation: fadeIn 1s ease;
 }
 
-.hero h1 {
+.hero-content h1 {
     font-size: 48px;
-    letter-spacing: 2px;
+    font-weight: 700;
     margin-bottom: 15px;
 }
 
-.hero p {
-    font-size: 16px;
+.hero-content p {
+    font-size: 18px;
+    color: #ddd;
     margin-bottom: 30px;
-    opacity: 0.9;
 }
 
 /* SEARCH BAR */
+/* GLASS EFFECT */
+.glass {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-.search-box {
+/* PREMIUM SEARCH */
+.search-box.glass {
     display: flex;
-    background: white;
-    border-radius: 3px;
-    overflow: hidden;
-    max-width: 700px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 14px;
+    max-width: 500px;
     margin: auto;
 }
 
-.search-box input {
-    flex: 1;
+.search-box.glass input {
+    background: transparent;
     border: none;
     outline: none;
-    padding: 18px;
-    font-size: 15px;
+    color: white;
 }
 
-.search-box select {
-    border: none;
-    outline: none;
-    padding: 18px;
+.search-box.glass input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* BUTTON FIX */
+ 
+
+
+
+/* TAGS */
+.tags {
+    margin-top: 15px;
     font-size: 14px;
-    background: #f3f3f3;
 }
 
-.search-box button {
-    background: #f4b400;
-    border: none;
-    padding: 0 25px;
-    font-size: 20px;
-    cursor: pointer;
+.tags span {
+    color: #ccc;
+    margin-right: 10px;
 }
 
-.search-box button:hover {
-    background: #e0a800;
+.tags a {
+    color: white;
+    margin-right: 10px;
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+.tags a:hover {
+    opacity: 1;
+}
+
+/* FEATURES */
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 60px 20px;
+    background: #f9f9f9;
+    text-align: center;
+}
+
+.feature {
+    max-width: 250px;
+}
+
+.feature i {
+    font-size: 28px;
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+.feature h3 {
+    margin-bottom: 10px;
+}
+
+/* CTA */
+.cta {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.cta h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.cta-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 25px;
+    background: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.cta-btn:hover {
+    background: #43a047;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* RESPONSIVE */
-
-@media (max-width:768px) {
-
-    .hero {
-        height: 500px;
-    }
-
-    .hero h1 {
+@media (max-width: 768px) {
+    .hero-content h1 {
         font-size: 32px;
     }
 
-    .search-box {
-        display: flex;
-        background: white;
-        border-radius: 3px;
-        overflow: hidden;
-        max-width: 700px;
-        margin: auto;
+    .features {
+        flex-direction: column;
+        align-items: center;
     }
 
-    .search-box select {
-        border-top: 1px solid #ddd;
+    .search-box {
+        flex-direction: column;
+        gap: 10px;
     }
 
     .search-box button {
-        padding: 15px;
+        width: 100%;
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .hero-content h1 {
+        font-size: 28px;
     }
 
+    .search-box {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-box button {
+        width: 100%;
+    }
 }
 
 
@@ -355,6 +595,25 @@ body {
     }
 }
 
+/* art work preview page */
+
+.artwork-detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 2rem;
+}
+
+.artwork-image img {
+    max-width: 150px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.artwork-info {
+    max-width: 500px;
+}
+
 @media (max-width:768px) {
     
 }
@@ -444,3 +703,198 @@ footer {
 
 /* upload page */
 
+/* Page background */
+.upload-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Box */
+.upload-box {
+    background: #ffffff;
+    padding: 40px;
+    width: 420px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+/* Heading */
+.upload-heading {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #111827;
+}
+
+.upload-subtext {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 25px;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #374151;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s ease;
+}
+
+/* Focus state */
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+}
+
+/* File input */
+.form-group input[type="file"] {
+    padding: 6px;
+}
+
+/* Button */
+.upload-btn {
+    width: 100%;
+    padding: 11px;
+    background: #111827;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.upload-btn:hover {
+    background: #1f2937;
+}
+
+
+/* register page */
+
+/* Container */
+.auth-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f7fa;
+}
+
+/* Card */
+.auth-card {
+    background: white;
+    padding: 40px;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+/* Title */
+.auth-card h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.subtitle {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* Input fields */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #43a047;
+}
+
+/* Login link */
+.login-link {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.login-link a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* login  */
+
+/* Options row (remember + forgot) */
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.options a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.options a:hover {
+    text-decoration: underline;
+}
+
+.options input {
+    margin-right: 5px;
+}
