@@ -74,37 +74,6 @@ body {
     font-size: 15px;
 }
 
-/* RIGHT SIDE */
-
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.nav-right a {
-    text-decoration: none;
-    color: white;
-}
-
-.cart {
-    position: relative;
-}
-
-.badge {
-    position: absolute;
-    top: -8px;
-    right: -10px;
-    background: orange;
-    color: white;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 50%;
-}
-
-.total {
-    font-size: 14px;
-}
 /* anchor tages */
 .glass-btn {
     display: inline-block;
@@ -168,14 +137,13 @@ body {
 .user-menu-wrapper {
     position: relative;
     display: inline-block;
-    left: 23rem;
 }
 
 /* BUTTON */
 .user-btn {
     display: flex;
     align-items: center;
-    gap: 0;
+    gap: 8px;
     padding: 8px 12px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
