@@ -1,6 +1,6 @@
-{% block head %}
+<!-- {% block head %}
 <nav class="navbar">
-
+ {% if session.get("user_id") %}
     <div class="nav-left">
         <div class="logo">Pixistan <span>art gallery</span></div>
 
@@ -26,6 +26,34 @@
     <div class="hamburger" onclick="toggleMenu()">
         ☰
     </div>
-
 </nav>
-{%endblock%}
+{% else %}
+     <div class="nav-left">
+        <div class="logo">Pixistan <span>art gallery</span></div>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#">Buy Art</a></li>
+            <li><a href="#">Sell Art</a></li>
+            <li><a href="#">About Us</a></li>
+        </ul>
+    </div>
+
+    <div class="nav-right">
+        <a href="#"><i class="fa-regular fa-circle-user"></i></a>
+        <a href="/upload">Upload</a>
+        <a href="/register">Join</a>
+
+        <div class="cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge">3</span>
+        </div>
+
+        <span class="total">TOTAL: $0.00</span>
+    </div>
+
+    <div class="hamburger" onclick="toggleMenu()">
+        ☰
+    </div>
+    {% endif %}
+
+{%endblock%} -->

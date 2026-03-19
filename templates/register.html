@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+    <title>Register</title>
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="auth-card">
+        <h2>Create Account</h2>
+        <p class="subtitle">Join us and start your journey</p>
+
+        <form method="POST">
+          <div class="input-group">
+            <input name="username" placeholder="Username" required />
+          </div>
+
+          <div class="input-group">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <input
+              type="password"
+              name="confirm"
+              placeholder="Confirm Password"
+              required
+            />
+          </div>
+
+          <button type="submit">Sign Up</button>
+        </form>
+
+        <p class="login-link">
+          Already have an account? <a href="{{ url_for('login') }}">Login</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
