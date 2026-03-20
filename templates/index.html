@@ -17,78 +17,36 @@
         <div class="search-box glass">
           <div class="search-input">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input
-              type="text"
-              placeholder="Search art, artists, collections..."
-            />
+            <input type="text" placeholder="Search art, artists, collections..." />
           </div>
 
-           
+
         </div>
       </form>
-
-      <!-- TRENDING TAGS -->
-      <div class="tags">
-        <span>Trending:</span>
-        <a href="#">Nature</a>
-        <a href="#">Abstract</a>
-        <a href="#">Portrait</a>
-        <a href="#">Minimal</a>
-      </div>
-    </div>
   </section>
 
-  <!-- FEATURE SECTION -->
-  <!-- <section class="features">
-    <div class="feature">
-      <i class="fa-solid fa-palette"></i>
-      <h3>Creative Freedom</h3>
-      <p>Artists showcase their work without limits.</p>
-    </div>
+  <section class="gallery">
+    <h2 class="gallery-title">Featured Art</h2>
 
-    <div class="feature">
-      <i class="fa-solid fa-globe"></i>
-      <h3>Global Marketplace</h3>
-      <p>Connect with buyers and creators worldwide.</p>
-    </div>
+    <div class="masonry-grid">
+      {% for art in artworks %}
+      <div class="masonry-item">
+        <div class="image-container">
+          <!-- ✅ Wrap image in a link to artwork page -->
+          <a href="{{ url_for('artwork', art_id=art['id']) }}">
+            <img src="/static/uploads/{{ art.image }}" alt="{{ art.title }}" />
+          </a>
 
-    <div class="feature">
-      <i class="fa-solid fa-bolt"></i>
-      <h3>Fast & Simple</h3>
-      <p>Upload, discover, and purchase in seconds.</p>
-    </div>
-  </section> -->
-
-  <!-- CTA SECTION
-  <section class="cta">
-    <h2>Start Your Creative Journey</h2>
-    <p>Join thousands of artists and collectors today.</p>
-
-    <a href="{{ url_for('register') }}" class="cta-btn">Get Started</a>
-  </section> -->
-
- <section class="gallery">
-  <h2 class="gallery-title">Featured Art</h2>
-
-  <div class="masonry-grid">
-    {% for art in artworks %}
-    <div class="masonry-item">
-      <div class="image-container">
-        <!-- ✅ Wrap image in a link to artwork page -->
-        <a href="{{ url_for('artwork', art_id=art['id']) }}">
-          <img src="/static/uploads/{{ art.image }}" alt="{{ art.title }}" />
-        </a>
-
-        <div class="overlay">
-          <h3>{{ art.title }}</h3>
-          <p>{{ art.artist }}</p>
-          <span><i class="fa-solid fa-heart"></i> likes</span>
-          <p class="desc">{{ art.description }}</p>
+          <div class="overlay">
+            <h3>{{ art.title }}</h3>
+            <p>{{ art.artist }}</p>
+            <span><i class="fa-solid fa-heart"></i> likes</span>
+            <p class="desc">{{ art.description }}</p>
+          </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
-</section>
+  </section>
 </div>
 {% endblock%}
