@@ -18,40 +18,48 @@
 
   <!-- Navbar (always visible) -->
   <nav class="navbar">
-    <div class="nav-left">
-      <div class="logo">Pixistan <span>Art Gallery</span></div>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#">About Us</a></li>
-      </ul>
+
+  <div class="nav-left">
+    <div class="logo">Pixistan <span>Art Gallery</span></div>
+
+  </div>
+
+  <div class="nav-right">
+
+    {% if session.get("user_id") %}
+    
+    <div class="user-menu-wrapper">
+
+      <button class="user-btn" id="userBtn">
+        <img src="/static/uploads/pf.png" class="avatar">
+        <span>{{ session.get("username") }}</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+
+      <div class="user-dropdown" id="userDropdown">
+        <a href="{{ url_for('profile') }}">
+          <i class="fa-solid fa-user"></i> Profile
+        </a>
+        <a href="{{ url_for('upload') }}">
+          <i class="fa-solid fa-upload"></i> Upload
+        </a>
+        <a href="{{ url_for('logout') }}" class="logout">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+      </div>
+
     </div>
 
-    <div class="nav-right">
-      {% if session.get("user_id") %}
-        <div class="user-menu-wrapper">
-    <button class="user-btn" id="userBtn">
-        <img src="/static/uploads/pf.png" alt="User Avatar" class="avatar">
-        <span>Welcome! {{ session.get("username") }}</span>
-    </button>
+    {% else %}
 
-    <div class="user-dropdown" id="userDropdown">
-        <a href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> Profile</a>
-        <a href="{{ url_for('settings') }}"><i class="fa-solid fa-gear"></i> Settings</a>
-        <a href="{{ url_for('upload') }}" <i class="fa-solid fa-upload"></i> Upload</a>
-        <a href="{{ url_for('logout') }}" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-        
+      <a href="/login" class="btn-outline">Login</a>
+      <a href="/register" class="btn-primary">Join</a>
 
-    </div>
-</div>
-</div>
-        
-      {% else %}
-        <a href="/register" class="glass-btn">Join</a>
-        <a href="/login" class="glass-btn">Login</a>
-      {% endif %}
-    </div>
+    {% endif %}
 
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-  </nav>
+  </div>
+
+</nav>
 
   <!-- Flash Messages (always on top) -->
   {% with messages = get_flashed_messages() %}

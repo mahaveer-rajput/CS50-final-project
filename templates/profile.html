@@ -1,11 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
     <title>Profile</title>
-</head>
-<body>
-    hi Im user
-</body>
+  </head>
+  <body>
+ <section class="profile-container">
+
+  <!-- 🔹 Profile Header -->
+  <div class="profile-header">
+
+    <div class="profile-left">
+      <div class="profile-pic">
+        {% if user['profile_pic'] %}
+          <img src="{{ url_for('static', filename='uploads/' ~ user['profile_pic']) }}">
+        {% else %}
+          <img src="{{ url_for('static', filename='default.png') }}">
+        {% endif %}
+      </div>
+
+      <div class="profile-info">
+        <h2>{{ user['username'] }}</h2>
+        <p class="subtitle">Artist • Creator</p>
+        <p class="stats">
+          {{ artworks|length }} Artworks
+        </p>
+      </div>
+    </div>
+
+    <!-- Upload Profile Picture -->
+    <form method="POST" enctype="multipart/form-data" class="profile-form">
+      <input type="file" name="profile_pic" required>
+      <button type="submit">Update Profile</button>
+    </form>
+
+  </div>
+
+  <!-- 🔹 Divider -->
+  <hr>
+
+  <!-- 🔹 User Artworks -->
+  <div class="profile-gallery">
+    <h3>Your Artworks</h3>
+
+    {% if artworks %}
+      <div class="grid">
+        {% for art in artworks %}
+          <div class="card">
+            <img src="{{ url_for('static', filename='uploads/' ~ art['image']) }}">
+            <div class="card-info">
+              <h4>{{ art['title'] }}</h4>
+              <p>{{ art['artist'] }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty">No artworks uploaded yet.</p>
+    {% endif %}
+  </div>
+
+</section>
+  </body>
 </html>

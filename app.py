@@ -84,8 +84,39 @@ def artwork(art_id):
 # --------------------------
 @app.route("/profile")
 def profile():
-    return render_template("profile.html")
+    
+    conn = get_db_connection()
 
+    #handle profile pic upload
+
+    if request.method == "POST":
+        file = request.files.get("profile_pic")
+
+        if file:
+            filename = file.filename
+            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+
+            conn.execute(
+                "UPDATE users SET profile_pic = ? WHERE id = ?",
+                (filename, session["user_id"])
+            )
+            conn.commit()
+
+    # Get user info 
+    user = conn.execute(
+        "SELECT * FROM users WHERE id = ?",
+        (session["user_id"],)
+    ).fetchone()
+
+    # Get user info 
+    artworks = conn.execute(
+    "SELECT * FROM artworks WHERE user_id = ?",
+    (session["user_id"],)
+    ).fetchall()
+
+    conn.close()
+
+    return render_template("profile.html", user=user, artworks=artworks)       
 # --------------------------
 # settings
 # --------------------------
@@ -129,7 +160,6 @@ def register():
             return redirect("/register")
 
         conn.close()
-        flash("Registered successfully! Please login.")
         return redirect("/login")
 
     return render_template("register.html")
@@ -157,7 +187,6 @@ def login():
         conn.close()
 
         if user is None or not check_password_hash(user["password"], password):
-            flash("Username or password incorrect")
             return redirect("/login")
 
         # Login successful

@@ -1,17 +1,3 @@
-window.addEventListener("scroll", function () {
-  const navbar = document.querySelector(".navbar");
-
-  if (window.scrollY > 50) {
-    navbar.classList.add("scrolled");
-  } else {
-    navbar.classList.remove("scrolled");
-  }
-});
-
-function toggleMenu() {
-  document.getElementById("navLinks").classList.toggle("active");
-}
-
 // Toggle dropdown on click
 const userBtn = document.getElementById("userBtn");
 const userDropdown = document.getElementById("userDropdown");
