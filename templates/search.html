@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+    <title>Search</title>
+  </head>
+  <body>
+    <section class="search-page">
+      <!-- 🔍 Header -->
+      <div class="search-header">
+        <h2>Results for "{{ query }}"</h2>
+        <p>{{ artworks|length }} results found</p>
+      </div>
+ 
+      <!-- 🖼️ Results Grid -->
+      {% if artworks %}
+      <div class="masonry-grid">
+        {% for art in artworks %}
+        <div class="masonry-item">
+          <a href="{{ url_for('artwork', art_id=art['id']) }}">
+            <div class="image-container">
+              <img
+                src="{{ url_for('static', filename='uploads/' ~ art['image']) }}"
+              />
+
+              <!-- Hover overlay -->
+              <div class="overlay">
+                <h3>{{ art['title'] }}</h3>
+                <p>{{ art['artist'] }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% else %}
+
+      <!-- ❌ Empty State -->
+      <div class="empty-state">
+        <h3>No results found 😢</h3>
+        <p>Try searching something else</p>
+      </div>
+
+      {% endif %}
+    </section>
+  </body>
+</html>

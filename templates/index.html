@@ -13,11 +13,17 @@
       </p>
 
       <!-- SEARCH -->
-      <form class="search-box">
+      <form action="{{ url_for('search') }}" method="GET" class="search-box">
         <div class="search-box glass">
           <div class="search-input">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search art, artists, collections..." />
+            <input type="text" 
+              name="q" 
+              placeholder="Search art, artists, collections..."
+              value="{{ request.args.get('q', '') }}"
+              autocomplete="off"
+              required
+              />
           </div>
 
 
@@ -31,20 +37,23 @@
     <div class="masonry-grid">
       {% for art in artworks %}
       <div class="masonry-item">
-        <div class="image-container">
-          <!-- ✅ Wrap image in a link to artwork page -->
-          <a href="{{ url_for('artwork', art_id=art['id']) }}">
-            <img src="/static/uploads/{{ art.image }}" alt="{{ art.title }}" />
-          </a>
+  <div class="image-container">
+    <a href="{{ url_for('artwork', art_id=art['id']) }}">
+      <img src="/static/uploads/{{ art.image }}" alt="{{ art.title }}" />
+    </a>
 
-          <div class="overlay">
-            <h3>{{ art.title }}</h3>
-            <p>{{ art.artist }}</p>
-            <span><i class="fa-solid fa-heart"></i> likes</span>
-            <p class="desc">{{ art.description }}</p>
-          </div>
+    <div class="overlayy">
+      <div class="overlay-content">
+        <h4>{{ art.title }}</h4>
+        <p>{{ art.artist }}</p>
+        <div class="overlay-stats">
+          <span><i class="fa-solid fa-heart"></i> {{ art.likes }}</span>
+          <span><i class="fa-solid fa-download"></i></span>
         </div>
       </div>
+    </div>
+  </div>
+</div>
       {% endfor %}
     </div>
   </section>

@@ -1,3 +1,38 @@
+const likeBtn = document.getElementById("likeBtn");
+
+if (likeBtn) {
+  likeBtn.addEventListener("click", async () => {
+    const artId = likeBtn.dataset.id;
+
+    try {
+      const response = await fetch(`/like/${artId}`, {
+        method: "POST",
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        alert("Please login first");
+        return;
+      }
+
+      // 🔥 Update button UI
+      if (data.liked) {
+        likeBtn.classList.add("liked");
+        likeBtn.innerHTML = "❤️ Liked";
+      } else {
+        likeBtn.classList.remove("liked");
+        likeBtn.innerHTML = "🤍 Like";
+      }
+
+      // 🔥 Update like count
+      document.getElementById("likeCount").innerText = `❤️ ${data.count} likes`;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  });
+}
+
 // Toggle dropdown on click
 const userBtn = document.getElementById("userBtn");
 const userDropdown = document.getElementById("userDropdown");

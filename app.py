@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash, url_for
+from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
@@ -14,7 +14,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 # Database connection helper
 # --------------------------
 def get_db_connection():
-    conn = sqlite3.connect("gallery.db")
+    conn = sqlite3.connect("gallery.db", timeout=5)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -27,6 +27,28 @@ def index():
     artworks = conn.execute("SELECT * FROM artworks").fetchall()
     conn.close()
     return render_template("index.html", artworks=artworks)
+
+# search route 
+
+@app.route("/search")
+def search():
+    query = request.args.get("q")
+
+    conn = get_db_connection()
+
+    artworks = conn.execute(
+        """
+        SELECT * FROM artworks
+        WHERE title LIKE ?
+        OR artist LIKE ?
+        OR description LIKE ?
+        """,
+        (f"%{query}%", f"%{query}%", f"%{query}%")
+    ).fetchall()
+
+    conn.close()
+
+    return render_template("search.html", artworks=artworks, query=query)
 
 # --------------------------
 # Upload Artwork
@@ -71,18 +93,81 @@ def upload():
 @app.route("/artwork/<int:art_id>")
 def artwork(art_id):
     conn = get_db_connection()
-    art = conn.execute("SELECT * FROM artworks WHERE id = ?", (art_id,)).fetchone()
+    art = conn.execute("""
+        SELECT artworks.*, COUNT(likes.id) AS like_count
+        FROM artworks
+        LEFT JOIN likes ON artworks.id = likes.artwork_id
+        WHERE artworks.id = ?
+        GROUP BY artworks.id
+    """, (art_id,)).fetchone()
+    user_liked = False
+    if session.get("user_id"):
+        liked = conn.execute(
+            "SELECT * FROM likes WHERE user_id = ? AND artwork_id = ?",
+            (session["user_id"], art_id)
+        ).fetchone()
+
+        user_liked = True if liked else False
+
+    related = conn.execute(
+        "SELECT * FROM artworks WHERE id != ? ORDER BY RANDOM() LIMIT 4",
+        (art_id,)
+    ).fetchall()
     conn.close()
 
     if art is None:
         flash("Artwork not found")
         return redirect("/")
     
-    return render_template("artwork.html", art=art)
+    return render_template("artwork.html", art=art, related=related, user_liked=user_liked)
+
+@app.route("/like/<int:art_id>", methods=["POST"])
+def like(art_id):
+    if not session.get("user_id"):
+        flash("Login required")
+        return redirect("/login")
+
+    conn = get_db_connection()
+
+    try:
+        existing = conn.execute(
+            "SELECT * FROM likes WHERE user_id = ? AND artwork_id = ?",
+            (session["user_id"], art_id) 
+        ).fetchone()
+
+        if existing:
+                    # 💔 Unlike
+            conn.execute(
+                "DELETE FROM likes WHERE user_id = ? AND artwork_id = ?",
+                (session["user_id"], art_id)
+            )
+            liked = False
+        else:
+            # ❤️ Like
+            conn.execute(
+                "INSERT INTO likes (user_id, artwork_id) VALUES (?, ?)",
+                (session["user_id"], art_id)
+            )
+            liked = True
+
+        conn.commit()
+
+        count = conn.execute(
+            "SELECT COUNT(*) FROM likes WHERE artwork_id = ?",
+            (art_id,)
+        ).fetchone()[0]
+
+    finally:
+        conn.close()
+
+        return jsonify({
+            "liked": liked,
+            "count": count
+        })
 # --------------------------
 # Profile
 # --------------------------
-@app.route("/profile")
+@app.route("/profile", methods=['GET', 'POST'])
 def profile():
     
     conn = get_db_connection()
@@ -117,13 +202,6 @@ def profile():
     conn.close()
 
     return render_template("profile.html", user=user, artworks=artworks)       
-# --------------------------
-# settings
-# --------------------------
-@app.route("/settings")
-def settings():
-    return render_template("settings.html")
-
 
 # --------------------------
 # Register

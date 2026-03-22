@@ -334,6 +334,79 @@ body {
 
 }
 
+/* search results page */
+
+.search-page{
+    max-width: 80%;
+    margin-left: 8rem;
+}
+
+/* HEADER */
+.search-header {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.search-header h2 {
+    font-size: 28px;
+}
+
+.search-header p {
+    color: gray;
+    margin-top: 5px;
+}
+
+/* FILTERS */
+.search-filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-filters button {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: none;
+    background: #eee;
+    cursor: pointer;
+}
+
+.search-filters .active {
+    background: black;
+    color: white;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    text-align: center;
+    margin-top: 50px;
+    color: gray;
+}
+
+/* IMAGE HOVER */
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.image-container img {
+    width: 100%;
+    display: block;
+    transition: 0.3s;
+}
+
+ 
+
+.image-container:hover .overlayy {
+    opacity: 1;
+}
+
+.image-container:hover img {
+    transform: scale(1.05);
+}
+
 
 .gallery {
     padding: 60px 80px;
@@ -383,37 +456,80 @@ body {
     overflow: hidden;
 }
 
-.overlay {
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.image-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.image-container:hover img {
+    transform: scale(1.05);
+}
+
+/* Overlay */
+.overlayy {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    /* dark semi-transparent */
+    backdrop-filter: blur(8px);
+    /* glassy blur */
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
     padding: 15px;
-
     transform: translateY(100%);
-    transition: transform 0.3s ease;
+    transition: transform 0.35s ease;
 }
 
-.image-container:hover .overlay {
+.image-container:hover .overlayy {
     transform: translateY(0);
 }
 
-.overlay h4 {
+/* Overlay content */
+.overlay-content {
+    width: 100%;
+    color: white;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.overlay-content h4 {
     margin: 0;
     font-size: 16px;
+    font-weight: 600;
 }
 
-.overlay p {
-    margin: 4px 0;
+.overlay-content p {
+    margin: 0;
     font-size: 13px;
+    opacity: 0.8;
 }
 
-.overlay span {
-    font-size: 14px;
+/* Stats row */
+.overlay-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.overlay-stats span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 /* RESPONSIVE BREAKPOINTS */
@@ -446,21 +562,110 @@ body {
 
 /* art work preview page */
 
-.artwork-detail {
+/* ARTWORK PAGE */
+.artwork-container {
+    max-width: 1200px;
+    margin: 100px auto;
+    padding: 20px;
+
     display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin: 2rem;
+    gap: 40px;
+    align-items: flex-start;
 }
 
-.artwork-image img {
-    max-width: 150px;
+/* LEFT IMAGE */
+.artwork-left {
+    flex: 1.2;
+    max-width: 700px;
+    /* 🔥 LIMIT SIZE */
+}
+
+.artwork-left img {
     width: 100%;
-    border-radius: 8px;
+    max-height: 80vh;
+    /* 🔥 prevent huge image */
+    object-fit: contain;
+    /* keeps aspect ratio */
+    border-radius: 12px;
 }
 
-.artwork-info {
-    max-width: 500px;
+/* RIGHT CONTENT */
+.artwork-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* TITLE */
+.art-title {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* ARTIST */
+.art-artist {
+    color: gray;
+    font-size: 14px;
+}
+
+.art-artist span {
+    color: black;
+    font-weight: 600;
+}
+
+/* DESCRIPTION */
+.art-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #444;
+}
+
+/* ACTION BUTTONS */
+.art-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-like {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #ef4444;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-like:hover {
+    background: #dc2626;
+}
+
+.btn-download {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #111827;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-download:hover {
+    background: #1f2937;
+}
+
+/* 🔥 RESPONSIVE */
+@media (max-width: 768px) {
+    .artwork-container {
+        flex-direction: column;
+        margin: 80px 10px;
+    }
+
+    .art-title {
+        font-size: 22px;
+    }
 }
 
 @media (max-width:768px) {

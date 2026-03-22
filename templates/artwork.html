@@ -1,25 +1,56 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Artwork</title>
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
-  </head>
-  <body>
-    <section class="artwork-detail">
-      <div class="artwork-image">
-        <img
-          src="{{ url_for('static', filename='uploads/' ~ art['image']) }}"
-          alt="{{ art['title'] }}"
-        />
-      </div>
+{% extends "layout.html" %} {% block content %}
 
-      <div class="artwork-info">
-        <h1>{{ art['title'] }}</h1>
-        <p><strong>Artist:</strong> {{ art['artist'] }}</p>
-        <p><strong>Description:</strong> {{ art['description'] }}</p>
-      </div>
-    </section>
-  </body>
-</html>
+<section class="artwork-container">
+  <!-- IMAGE -->
+  <div class="artwork-left">
+    <img src="{{ url_for('static', filename='uploads/' ~ art['image']) }}" />
+  </div>
+
+  <!-- DETAILS -->
+  <div class="artwork-right">
+    <h1 class="art-title">{{ art['title'] }}</h1>
+
+    <p class="art-artist">by <strong>{{ art['artist'] }}</strong></p>
+
+    <p class="art-desc">{{ art['description'] }}</p>
+
+    <!-- ACTIONS -->
+    <div class="art-actions">
+      <!-- LIKE -->
+       
+        <button id="likeBtn" data-id="{{ art['id'] }}" class="btn-like {% if user_liked %}liked{% endif %}"  >
+          {% if user_liked %} ❤️ Liked {% else %} 🤍 Like {% endif %}
+        </button>
+       
+
+      <!-- DOWNLOAD -->
+      <a
+        href="{{ url_for('static', filename='uploads/' ~ art['image']) }}"
+        download
+      >
+        <button class="btn-download">⬇ Download</button>
+      </a>
+    </div>
+    <!-- ❤️ LIKE COUNT -->
+    <p class="like-count" id="likeCount">❤️ {{ art['like_count'] }} likes</p>
+  </div>
+</section>
+
+<!-- 🔥 RELATED ARTWORKS -->
+<section class="gallery">
+  <h2 class="gallery-title">Related Artworks</h2>
+
+  <div class="masonry-grid">
+    {% for item in related %}
+    <div class="masonry-item">
+      <a href="{{ url_for('artwork', art_id=item['id']) }}">
+        <img
+          src="{{ url_for('static', filename='uploads/' ~ item['image']) }}"
+        />
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

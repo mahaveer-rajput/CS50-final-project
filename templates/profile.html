@@ -17,7 +17,7 @@
         {% if user['profile_pic'] %}
           <img src="{{ url_for('static', filename='uploads/' ~ user['profile_pic']) }}">
         {% else %}
-          <img src="{{ url_for('static', filename='default.png') }}">
+          <img src="{{ url_for('static', filename='uploads/acc.png') }}">
         {% endif %}
       </div>
 
@@ -49,7 +49,9 @@
       <div class="grid">
         {% for art in artworks %}
           <div class="card">
+            <a href="{{ url_for('artwork', art_id=art['id']) }}">
             <img src="{{ url_for('static', filename='uploads/' ~ art['image']) }}">
+          </a>
             <div class="card-info">
               <h4>{{ art['title'] }}</h4>
               <p>{{ art['artist'] }}</p>
@@ -58,7 +60,7 @@
         {% endfor %}
       </div>
     {% else %}
-      <p class="empty">No artworks uploaded yet.</p>
+       <a href="/upload"><button class="btn-primary">Upload Art</button></a>
     {% endif %}
   </div>
 
