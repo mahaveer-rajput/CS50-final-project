@@ -1,12 +1,7 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
-    <title>Profile</title>
-  </head>
-  <body>
+{% extends "layout.html" %}
+
+{% block content %}
+
  <section class="profile-container">
 
   <!-- 🔹 Profile Header -->
@@ -33,7 +28,7 @@
     <!-- Upload Profile Picture -->
     <form method="POST" enctype="multipart/form-data" class="profile-form">
       <input type="file" name="profile_pic" required>
-      <button type="submit">Update Profile</button>
+      <button class="update-btn" type="submit">Update Profile</button>
     </form>
 
   </div>
@@ -63,7 +58,6 @@
        <a href="/upload"><button class="btn-primary">Upload Art</button></a>
     {% endif %}
   </div>
-
 </section>
-  </body>
-</html>
+{% endblock %}
+

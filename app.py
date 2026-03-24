@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 import sqlite3
 import os
 
@@ -172,19 +173,39 @@ def profile():
     
     conn = get_db_connection()
 
-    #handle profile pic upload
-
     if request.method == "POST":
         file = request.files.get("profile_pic")
 
-        if file:
-            filename = file.filename
+        if file and file.filename != "":
+
+            # 1. Get old profile pic from DB
+            old = conn.execute(
+                "SELECT profile_pic FROM users WHERE id = ?",
+                (session["user_id"],)
+            ).fetchone()
+
+            if old and old["profile_pic"]:
+                old_path = os.path.join(app.config["UPLOAD_FOLDER"], old["profile_pic"])
+                
+                # 2. Delete old file if it exists
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+
+            # 3. Save new file
+            filename = secure_filename(file.filename)
+
+            # (Optional but recommended) make filename unique
+            import uuid
+            filename = str(uuid.uuid4()) + "_" + filename
+
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
+            # 4. Update DB
             conn.execute(
                 "UPDATE users SET profile_pic = ? WHERE id = ?",
                 (filename, session["user_id"])
             )
+
             conn.commit()
 
     # Get user info 
@@ -245,6 +266,19 @@ def register():
 # --------------------------
 # Login
 # --------------------------
+
+@app.context_processor
+def inject_user():
+    if "user_id" in session:
+        conn = get_db_connection()
+        user = conn.execute(
+            "SELECT * FROM users WHERE id = ?",
+            (session["user_id"],)
+        ).fetchone()
+        return dict(user=user)
+    
+    return dict(user=None)
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     session.clear()  # clear session first

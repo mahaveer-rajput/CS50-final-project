@@ -1,89 +1,85 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
 
-  <!-- Main CSS -->
-  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+    <!-- Main CSS -->
+    <link
+      href="{{ url_for('static', filename='css/style.css') }}"
+      rel="stylesheet"
+    />
 
-  <title>{% block title %}Pixistan Art Gallery{% endblock %}</title>
-</head>
+    <title>{% block title %}Pixistan Art Gallery{% endblock %}</title>
+  </head>
 
-<body>
-
-  <!-- Navbar (always visible) -->
-  <nav class="navbar">
-
-  <div class="nav-left">
-    <div class="logo">Pixistan <span>Art Gallery</span></div>
-
-  </div>
-
-  <div class="nav-right">
-
-    {% if session.get("user_id") %}
-    
-    <div class="user-menu-wrapper">
-
-      <button class="user-btn" id="userBtn">
-        <img src="/static/uploads/pf.png" class="avatar">
-        <span>{{ session.get("username") }}</span>
-        <i class="fa-solid fa-chevron-down"></i>
-      </button>
-
-      <div class="user-dropdown" id="userDropdown">
-        <a href="{{ url_for('profile') }}">
-          <i class="fa-solid fa-user"></i> Profile
-        </a>
-        <a href="{{ url_for('upload') }}">
-          <i class="fa-solid fa-upload"></i> Upload
-        </a>
-        <a href="{{ url_for('logout') }}" class="logout">
-          <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </a>
+  <body>
+    <!-- Navbar (always visible) -->
+    <nav class="navbar">
+      <div class="nav-left">
+        <div class="logo">Pixistan <span>Art Gallery</span></div>
       </div>
 
+      <div class="nav-right">
+        {% if session.get("user_id") %}
+
+        <div class="user-menu-wrapper">
+          <button class="user-btn" id="userBtn">
+            {% if user and user['profile_pic'] %}
+            <img
+              src="{{ url_for('static', filename='uploads/' ~ user['profile_pic']) }}"
+             class="avatar" />
+            {% else %}
+            <img src="/static/uploads/pf.png" class="avatar" />
+            {% endif %}
+            <span>{{ session.get("username") }}</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+
+          <div class="user-dropdown" id="userDropdown">
+            <a href="{{ url_for('profile') }}">
+              <i class="fa-solid fa-user"></i> Profile
+            </a>
+            <a href="{{ url_for('upload') }}">
+              <i class="fa-solid fa-upload"></i> Upload
+            </a>
+            <a href="{{ url_for('logout') }}" class="logout">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+          </div>
+        </div>
+
+        {% else %}
+
+        <a href="/login" class="btn-outline">Login</a>
+        <a href="/register" class="btn-primary">Join</a>
+
+        {% endif %}
+      </div>
+    </nav>
+
+    <!-- Flash Messages (always on top) -->
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <div class="flash-container">
+      {% for msg in messages %}
+      <p class="flash-message">{{ msg }}</p>
+      {% endfor %}
     </div>
+    {% endif %} {% endwith %}
 
-    {% else %}
+    <!-- Main content (always visible) -->
+    <main>{% block content %}{% endblock %}</main>
 
-      <a href="/login" class="btn-outline">Login</a>
-      <a href="/register" class="btn-primary">Join</a>
+    <!-- Footer -->
+    <footer>{% include "footer.html" %}</footer>
 
-    {% endif %}
-
-  </div>
-
-</nav>
-
-  <!-- Flash Messages (always on top) -->
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <div class="flash-container">
-        {% for msg in messages %}
-          <p class="flash-message">{{ msg }}</p>
-        {% endfor %}
-      </div>
-    {% endif %}
-  {% endwith %}
-
-  <!-- Main content (always visible) -->
-  <main>
-    {% block content %}{% endblock %}
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    {% include "footer.html" %}
-  </footer>
-
-  <!-- JS -->
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
-</body>
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
 </html>

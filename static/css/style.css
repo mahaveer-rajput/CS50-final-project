@@ -38,9 +38,7 @@ body {
     padding: 0 40px;
     z-index: 1000;
 
-    background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: #0f172a;
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -99,14 +97,17 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-
-    background: rgba(255, 255, 255, 0.08);
+    background: #0f172a;
     border: none;
     padding: 6px 12px;
     border-radius: 20px;
-
+    font-size: 1rem;
     color: white;
     cursor: pointer;
+}
+
+.user-btn:hover {
+    background: rgba(255, 255, 255, 0.1)
 }
 
 /* AVATAR */
@@ -175,7 +176,7 @@ body {
 /* HERO */
 .hero {
     position: relative;
-    top: 5rem;
+    top: 4.5rem;
     margin-bottom: 10rem;
     height: 350px;
     max-width: 1200px;
@@ -339,6 +340,8 @@ body {
 .search-page{
     max-width: 80%;
     margin-left: 8rem;
+    margin-top: 7rem;
+    margin-bottom: 5rem;
 }
 
 /* HEADER */
@@ -356,13 +359,6 @@ body {
     margin-top: 5px;
 }
 
-/* FILTERS */
-.search-filters {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
 
 .search-filters button {
     padding: 6px 14px;
@@ -372,10 +368,6 @@ body {
     cursor: pointer;
 }
 
-.search-filters .active {
-    background: black;
-    color: white;
-}
 
 /* EMPTY STATE */
 .empty-state {
@@ -829,7 +821,7 @@ footer {
 .upload-btn {
     width: 100%;
     padding: 11px;
-    background: #111827;
+    background: #4CAF50;
     color: white;
     border: none;
     border-radius: 6px;
@@ -897,22 +889,6 @@ footer {
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
 }
 
-/* Button */
-button {
-    width: 100%;
-    padding: 12px;
-    background: #4CAF50;
-    border: none;
-    color: white;
-    font-size: 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    background: #43a047;
-}
 
 /* Login link */
 .login-link {
@@ -953,6 +929,19 @@ button:hover {
     margin-right: 5px;
 }
 
+.signinup{
+    width: 100%;
+    padding: 12px;
+    background: #111827;
+    border: none;
+    color: white;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+ 
+}
+
 /* user profile */
 
 /* Container */
@@ -960,6 +949,7 @@ button:hover {
     max-width: 1100px;
     margin: 40px auto;
     padding: 20px;
+    margin-top: 5rem;
 }
 
 /* Header */
@@ -975,6 +965,17 @@ button:hover {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.update-btn{
+    width: 100%;
+    padding: 12px;
+    border: none;
+    color: white;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 /* Profile image */
@@ -1008,7 +1009,7 @@ button:hover {
 .profile-form button {
     padding: 8px 14px;
     border: none;
-    background: black;
+    background: #111827;
     color: white;
     border-radius: 6px;
     cursor: pointer;
