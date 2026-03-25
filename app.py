@@ -1,15 +1,21 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from datetime import timedelta
+from flask_wtf import CSRFProtect
+import secrets
+import time
 import sqlite3
 import os
 
 app = Flask(__name__)
 app.secret_key = "mahaveer"  # REQUIRED for session
+app.permanent_session_lifetime = timedelta(days=7)
 
 # Upload folder
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+csrf = CSRFProtect(app)
 
 # --------------------------
 # Database connection helper
@@ -231,8 +237,13 @@ def profile():
 def register():
     if request.method == "POST":
         username = request.form.get("username")
+        email = request.form.get("email")
         password = request.form.get("password")
         confirm = request.form.get("confirm")
+
+        if "@" not in email:
+            flash("invaild email")
+            return redirect("/register")
 
         # Validation
         if not username or not password or not confirm:
@@ -249,8 +260,8 @@ def register():
         conn = get_db_connection()
         try:
             conn.execute(
-                "INSERT INTO users (username, password) VALUES (?, ?)",
-                (username, hash_password)
+                "INSERT INTO users (username, password, email) VALUES (?, ?, ?)",
+                (username, hash_password, email)
             )
             conn.commit()
         except sqlite3.IntegrityError:
@@ -284,17 +295,23 @@ def login():
     session.clear()  # clear session first
 
     if request.method == "POST":
-        username = request.form.get("username")
+        username_or_emial = request.form.get("username")
         password = request.form.get("password")
+        remember = request.form.get("remember")
 
-        if not username or not password:
+        if remember:
+            session.permanent = True
+        else:
+            session.permanent = False    
+
+        if not username_or_emial or not password:
             flash("Please fill all fields")
             return redirect("/login")
 
         conn = get_db_connection()
         user = conn.execute(
-            "SELECT * FROM users WHERE username = ?",
-            (username,)
+            "SELECT * FROM users WHERE username = ? OR email = ?",
+            (username_or_emial, username_or_emial)
         ).fetchone()
         conn.close()
 
@@ -309,6 +326,77 @@ def login():
         return redirect("/")
 
     return render_template("login.html")
+
+# --------------------------
+# Reset password
+# --------------------------
+
+@app.route("/forgot", methods=["GET", "POST"])
+def forgot():
+    if request.method == "POST":
+        email = request.form.get("email")
+
+        conn = get_db_connection()
+        user = conn.execute(
+            "SELECT * FROM users WHERE email = ?", (email,)
+        ).fetchone()
+
+        if user:
+            token = secrets.token_hex(32)
+            expiry = int(time.time()) + 900 
+
+            conn.execute(
+                "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE id = ?",
+                (token, expiry, user["id"])
+            )
+            conn.commit()
+
+            print(f"Reset link: http://127.0.0.1:5000/reset/{token}")
+
+        conn.close()
+
+        flash("if email exists, a reset link has been sent. ")
+        return redirect("/login")
+    
+    return render_template("forgot.html")
+
+# reset route main part 
+@app.route("/reset/<token>", methods=["GET", "POST"])
+def reset(token):
+    conn = get_db_connection()
+
+    user = conn.execute(
+        "SELECT * FROM users WHERE reset_token = ?", (token,)
+    ).fetchone()
+
+    if not user:
+        conn.close()
+        return "Invail or expired token"
+    
+    if user["reset_token_expiry"] < int(time.time()):
+        conn.close()
+        return "Token expired"
+    
+    if request.method == "POST":
+        new_password = request.form.get("password")
+
+        hash_password = generate_password_hash(new_password)
+
+        conn.execute(
+            """UPDATE users
+             SET password = ?, reset_token = NULL, reset_token_expiry = NULL
+             WHERE id = ?""",
+             (hash_password, user["id"])
+        )
+        conn.commit()
+        conn.close()
+
+        flash("Password reset successful. Please Login.")
+        return redirect ("/login")
+    
+    conn.close()
+    render_template("reset.html", token=token)
+
 
 # --------------------------
 # Logout

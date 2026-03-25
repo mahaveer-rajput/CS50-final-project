@@ -27,6 +27,9 @@
 
     <!-- Upload Profile Picture -->
     <form method="POST" enctype="multipart/form-data" class="profile-form">
+      <!-- csrf token input -->
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
       <input type="file" name="profile_pic" required>
       <button class="update-btn" type="submit">Update Profile</button>
     </form>

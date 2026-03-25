@@ -13,9 +13,17 @@
         <p class="subtitle">Join us and start your journey</p>
 
         <form method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+          <div class="input-group">
+            <input name="email" placeholder="Email" required />
+          </div>
+
           <div class="input-group">
             <input name="username" placeholder="Username" required />
           </div>
+
+          
 
           <div class="input-group">
             <input
