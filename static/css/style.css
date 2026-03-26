@@ -264,6 +264,8 @@ body {
 }
 
 /* RESPONSIVE */
+
+
 @media (max-width: 768px) {
 
     .hero {
@@ -308,9 +310,10 @@ body {
 @media (max-width: 480px) {
 
     .hero {
-        padding: 30px 12px;
-        margin: 90px 8px 30px;
-    }
+         
+      
+         
+        }
 
     .hero-content h1 {
         font-size: 22px;

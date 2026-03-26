@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import timedelta
 from flask_wtf import CSRFProtect
+from flask_mail import Mail, Message
 import secrets
 import time
 import sqlite3
@@ -11,6 +12,16 @@ import os
 app = Flask(__name__)
 app.secret_key = "mahaveer"  # REQUIRED for session
 app.permanent_session_lifetime = timedelta(days=7)
+
+# send verification email
+
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = "pixistann@gmail.com"
+app.config["MAIL_PASSWORD"] = "nytc swbl dkkg gzgm"
+
+mail = Mail(app)
 
 # Upload folder
 UPLOAD_FOLDER = "static/uploads"
@@ -351,7 +362,24 @@ def forgot():
             )
             conn.commit()
 
-            print(f"Reset link: http://127.0.0.1:5000/reset/{token}")
+            msg = Message(
+                subject="Password Reset",
+                sender=app.config["MAIL_USERNAME"],
+                recipients=[email]
+            )
+
+            reset_link = f"http://127.0.0.1:5000/reset/{token}"
+
+            msg.body = f"""
+            Click the link below to reset your password:
+
+            {reset_link}
+
+            if you didn't request this, ignore this email.
+            """
+            print("Sending email to:", email)
+
+            mail.send(msg)
 
         conn.close()
 
@@ -395,7 +423,8 @@ def reset(token):
         return redirect ("/login")
     
     conn.close()
-    render_template("reset.html", token=token)
+    
+    return render_template("reset.html", token=token)
 
 
 # --------------------------
@@ -413,4 +442,4 @@ def logout():
 if __name__ == "__main__":
     # Make sure upload folder exists
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

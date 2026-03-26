@@ -4,9 +4,19 @@ if (likeBtn) {
   likeBtn.addEventListener("click", async () => {
     const artId = likeBtn.dataset.id;
 
+    // 🔹 Get CSRF token from meta tag
+    const csrfToken = document
+      .querySelector('meta[name="csrf-token"]')
+      .getAttribute("content");
+
     try {
       const response = await fetch(`/like/${artId}`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken, // required for Flask-WTF
+        },
+        body: JSON.stringify({}), // empty body, we just need POST
       });
 
       const data = await response.json();
@@ -16,7 +26,7 @@ if (likeBtn) {
         return;
       }
 
-      // 🔥 Update button UI
+      // Update button UI
       if (data.liked) {
         likeBtn.classList.add("liked");
         likeBtn.innerHTML = "❤️ Liked";
@@ -25,7 +35,7 @@ if (likeBtn) {
         likeBtn.innerHTML = "🤍 Like";
       }
 
-      // 🔥 Update like count
+      // Update like count
       document.getElementById("likeCount").innerText = `❤️ ${data.count} likes`;
     } catch (error) {
       console.error("Error:", error);

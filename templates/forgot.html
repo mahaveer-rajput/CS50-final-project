@@ -14,11 +14,11 @@
       <div class="auth-card">
         <h2>Forgot Password?</h2>
 
-        <form method="POST">
+        <form action="/forgot" method="POST">
           <div class="input-group">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
-            <input name="username" placeholder="Email" required />
+            <input name="email" placeholder="Email" required />
           </div>
           <button class="signinup" type="submit">Verify Email</button>
         </form>
