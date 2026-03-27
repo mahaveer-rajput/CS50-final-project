@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from authlib.integrations.flask_client import OAuth
 from datetime import timedelta
 from flask_wtf import CSRFProtect
 from flask_mail import Mail, Message
@@ -22,6 +23,19 @@ app.config["MAIL_USERNAME"] = "pixistann@gmail.com"
 app.config["MAIL_PASSWORD"] = "nytc swbl dkkg gzgm"
 
 mail = Mail(app)
+
+oauth = OAuth(app)
+
+google = oauth.register(
+    name= 'google',
+    client_id='99408685962-3bvkgobd9klg54atmd6b3qiqpg2ulnt9.apps.googleusercontent.com',
+    client_secret='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',
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={
+        'scope': 'openid email profile'
+    }
+
+)
 
 # Upload folder
 UPLOAD_FOLDER = "static/uploads"
@@ -300,6 +314,49 @@ def inject_user():
         return dict(user=user)
     
     return dict(user=None)
+
+@app.route("/login/google")
+def google_login():
+    nonce = secrets.token_urlsafe(16)      # Generate random nonce
+    session['google_nonce'] = nonce        # Store it in session
+    return google.authorize_redirect("http://127.0.0.1:5000/callback", nonce=nonce)
+
+@app.route("/callback")
+def callback():
+    token = google.authorize_access_token()
+    nonce = session.pop("google_nonce", None)  # Get and remove nonce from session
+    if nonce is None:
+        flash("Login failed. Please try again.")
+        return redirect("/login")
+    
+    user_info = google.parse_id_token(token, nonce=nonce)  # ✅ pass nonce here
+
+    email = user_info["email"]
+    name = user_info["name"]
+
+    conn = get_db_connection()
+
+    user = conn.execute(
+        "SELECT * FROM users WHERE email = ?", (email,)
+    ).fetchone()
+
+    if not user:
+        conn.execute(
+            "INSERT INTO users (username, email) VALUES (?, ?)",
+            (name, email)
+        )
+        conn.commit()
+
+        user = conn.execute(
+            "SELECT * FROM users WHERE email = ?", (email,)
+        ).fetchone()
+
+    session["user_id"] = user["id"]
+    session["username"] = user["username"]
+
+    conn.close()
+
+    return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
