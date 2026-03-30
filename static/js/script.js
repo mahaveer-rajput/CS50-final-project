@@ -43,6 +43,32 @@ if (likeBtn) {
   });
 }
 
+// API artwork
+
+async function loadArtworks() {
+  const res = await fetch("/api/artworks");
+  const data = await res.json();
+
+  const grid = document.querySelector(".masonry-grid");
+  grid.innerHTML = "";
+
+  data.forEach((art) => {
+    grid.innerHTML += `
+        <div class="masonry-item">
+            <div class="image-container">
+                <img src="/static/uploads/${art.image}" />
+
+                <div class="overlay">
+                    <h3>${art.title}</h3>
+                    <p>${art.artist}</p>
+                    <span>❤️ ${art.likes || 0}</span>
+                </div>
+            </div>
+        </div>
+        `;
+  });
+}
+
 // Toggle dropdown on click
 const userBtn = document.getElementById("userBtn");
 const userDropdown = document.getElementById("userDropdown");
@@ -59,6 +85,4 @@ document.addEventListener("click", () => {
 });
 
 // CLOSE DROPDOWN ON SCROLL
-window.addEventListener("scroll", () => {
-  userDropdown.classList.remove("show");
-});
+ 

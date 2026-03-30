@@ -37,6 +37,7 @@ google = oauth.register(
 
 )
 
+
 # Upload folder
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -103,7 +104,8 @@ def upload():
 
         # Save image
         filename = image.filename
-        image.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+        file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        image.save(file_path)
 
         # Insert artwork into database
         conn = get_db_connection()
@@ -118,6 +120,15 @@ def upload():
         return redirect("/")
 
     return render_template("upload.html")
+
+# Api artwork 
+@app.route("/api/artworks")
+def get_artworks():
+    conn = get_db_connection()
+    artworks = conn.execute("SELECT * FROM artworks ORDER BY id DESC").fetchall()
+    conn.close()
+
+    return jsonify([dict(row) for row in artworks])
 
 # --------------------------
 # Art work page
@@ -253,7 +264,49 @@ def profile():
 
     conn.close()
 
-    return render_template("profile.html", user=user, artworks=artworks)       
+    return render_template("profile.html", user=user, artworks=artworks)  
+
+
+# delete art 
+
+@app.route("/delete/<int:art_id>", methods=["POST"])
+def delete_artwork(art_id):
+
+    if not session.get("user_id"):
+        flash("Login required")
+        return redirect("/login")
+
+    conn = get_db_connection()
+
+    # Get artwork
+    art = conn.execute(
+        "SELECT * FROM artworks WHERE id = ?",
+        (art_id,)
+    ).fetchone()
+
+    if not art:
+        conn.close()
+        flash("Artwork not found")
+        return redirect("/")
+
+    # 🔥 SECURITY: only owner can delete
+    if art["user_id"] != session["user_id"]:
+        conn.close()
+        flash("Unauthorized action")
+        return redirect("/")
+
+    # Delete image file
+    file_path = os.path.join("static/uploads", art["image"])
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    # Delete from DB
+    conn.execute("DELETE FROM artworks WHERE id = ?", (art_id,))
+    conn.commit()
+    conn.close()
+
+    flash("Artwork deleted successfully")
+    return redirect("/profile")
 
 # --------------------------
 # Register
