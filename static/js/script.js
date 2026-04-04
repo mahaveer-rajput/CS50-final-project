@@ -4,7 +4,6 @@ if (likeBtn) {
   likeBtn.addEventListener("click", async () => {
     const artId = likeBtn.dataset.id;
 
-    // 🔹 Get CSRF token from meta tag
     const csrfToken = document
       .querySelector('meta[name="csrf-token"]')
       .getAttribute("content");
@@ -14,9 +13,9 @@ if (likeBtn) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken, // required for Flask-WTF
+          "X-CSRFToken": csrfToken,
         },
-        body: JSON.stringify({}), // empty body, we just need POST
+        body: JSON.stringify({}),
       });
 
       const data = await response.json();
@@ -26,7 +25,6 @@ if (likeBtn) {
         return;
       }
 
-      // Update button UI
       if (data.liked) {
         likeBtn.classList.add("liked");
         likeBtn.innerHTML = "❤️ Liked";
@@ -35,7 +33,6 @@ if (likeBtn) {
         likeBtn.innerHTML = "🤍 Like";
       }
 
-      // Update like count
       document.getElementById("likeCount").innerText = `❤️ ${data.count} likes`;
     } catch (error) {
       console.error("Error:", error);
@@ -43,46 +40,128 @@ if (likeBtn) {
   });
 }
 
-// API artwork
-
-async function loadArtworks() {
-  const res = await fetch("/api/artworks");
-  const data = await res.json();
-
-  const grid = document.querySelector(".masonry-grid");
-  grid.innerHTML = "";
-
-  data.forEach((art) => {
-    grid.innerHTML += `
-        <div class="masonry-item">
-            <div class="image-container">
-                <img src="/static/uploads/${art.image}" />
-
-                <div class="overlay">
-                    <h3>${art.title}</h3>
-                    <p>${art.artist}</p>
-                    <span>❤️ ${art.likes || 0}</span>
-                </div>
-            </div>
-        </div>
-        `;
-  });
-}
-
-// Toggle dropdown on click
 const userBtn = document.getElementById("userBtn");
 const userDropdown = document.getElementById("userDropdown");
 
-// Toggle dropdown on click
-userBtn.addEventListener("click", (e) => {
-  e.stopPropagation(); // prevent click from closing immediately
-  userDropdown.classList.toggle("show");
+if (userBtn && userDropdown) {
+  userBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    userDropdown.classList.toggle("show");
+  });
+
+  document.addEventListener("click", () => {
+    userDropdown.classList.remove("show");
+  });
+}
+
+let offset = 0;
+let loading = false;
+let allLoaded = false;
+
+const grid = document.getElementById("feedGrid");
+
+function showSkeletons(count = 10) {
+  if (!grid) return;
+  for (let i = 0; i < count; i++) {
+    const div = document.createElement("div");
+    div.className = "masonry-item skeleton";
+    div.style.height = `${200 + Math.random() * 150}px`;
+    grid.appendChild(div);
+  }
+}
+
+function removeSkeletons() {
+  document.querySelectorAll(".skeleton").forEach((el) => el.remove());
+}
+
+async function loadMore() {
+  if (loading || allLoaded) return;
+
+  loading = true;
+  showSkeletons();
+
+  const res = await fetch(`/api/feed?offset=${offset}`);
+  const data = await res.json();
+
+  removeSkeletons();
+
+  if (data.length === 0) {
+    allLoaded = true;
+    const end = document.createElement("div");
+    end.innerHTML = `
+      <div class="end-message">
+        <div class="end-line"></div>
+        <span>You're all caught up</span>
+        <div class="end-line"></div>
+      </div>
+    `;
+    grid.appendChild(end);
+    return;
+  }
+
+  data.forEach((art) => {
+    const div = document.createElement("div");
+    div.className = "masonry-item";
+
+    const imageSrc =
+      art.source === "pixabay" ? art.image : `/static/uploads/${art.image}`;
+
+    let artUrl;
+    if (art.source === "pixabay") {
+      const params = new URLSearchParams({
+        title: art.title,
+        artist: art.artist,
+        image: art.image,
+        likes: art.like_count,
+      });
+      artUrl = `/pixabay/${art.id}?${params}`;
+    } else {
+      artUrl = `/artwork/${art.id}`;
+    }
+
+    div.innerHTML = `
+      <div class="image-container">
+        <a href="${artUrl}">
+          <img src="${imageSrc}" alt="${art.title}" loading="lazy" />
+          <div class="overlayy">
+            <div class="overlay-content">
+              <h4>${art.title}</h4>
+              <p>${art.artist}</p>
+              <div class="overlay-stats">
+                <span><i class="fa-solid fa-heart"></i> <span class="like-count">${art.like_count}</span></span>
+                <span><i class="fa-solid fa-download"></i></span>
+              </div>
+              <div class="mobile-stats">
+                <span><i class="fa-solid fa-heart"></i> ${art.like_count}</span>
+                <span><i class="fa-solid fa-download"></i></span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    `;
+
+    grid.appendChild(div);
+  });
+
+  offset += data.length;
+  loading = false;
+}
+
+window.addEventListener("scroll", () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300) {
+    loadMore();
+  }
 });
 
-// Close dropdown if click outside
-document.addEventListener("click", () => {
-  userDropdown.classList.remove("show");
-});
+setInterval(async () => {
+  const res = await fetch(`/api/feed?offset=0&limit=${offset}`);
+  const data = await res.json();
 
-// CLOSE DROPDOWN ON SCROLL
- 
+  data.forEach((art) => {
+    const likeEl = document.querySelector(`[data-id="${art.id}"] .like-count`);
+    if (likeEl) likeEl.textContent = `❤️ ${art.like_count}`;
+  });
+}, 5000);
+
+loadMore();

@@ -41,5 +41,12 @@
         </p>
       </div>
     </div>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <div class="flash-container">
+      {% for msg in messages %}
+      <p class="flash-message">{{ msg }}</p>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
   </body>
 </html>

@@ -1,49 +1,73 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <section class="search-page">
-      <!-- 🔍 Header -->
-      <div class="search-header">
-        <h2>Results for "{{ query }}"</h2>
-        <p>{{ artworks|length }} results found</p>
-      </div>
- 
-      <!-- 🖼️ Results Grid -->
-      {% if artworks %}
-      <div class="masonry-grid">
-        {% for art in artworks %}
-        <div class="masonry-item">
-          <a href="{{ url_for('artwork', art_id=art['id']) }}">
-            <div class="image-container">
-              <img
-                src="{{ url_for('static', filename='uploads/' ~ art['image']) }}"
-              />
+<section class="search-page">
 
-              <!-- Hover overlay -->
-              <div class="overlayy">
-                <div class="overlay-content">
-                <h4>{{ art.title }}</h3>
-                <p>{{ art.artist }}</p>
-                <div class="overlay-stats">
-                   <span><i class="fa-solid fa-heart"></i> {{ art.count }}</span>
-                   <span><i class="fa-solid fa-download"></i></span>
-                </div>
+  <!-- HEADER -->
+  <div class="search-header">
+    <h2>Results for "{{ query }}"</h2>
+    <p>{{ artworks|length }} local + {{ pixabay|length }} Pixabay results</p>
+  </div>
+
+  <!-- LOCAL RESULTS -->
+  {% if artworks %}
+  <h3 class="section-label">From Pixistan</h3>
+  <div class="masonry-grid">
+    {% for art in artworks %}
+    <div class="masonry-item">
+      <a href="{{ url_for('artwork', art_id=art['id']) }}">
+        <div class="image-container">
+          <img src="{{ url_for('static', filename='uploads/' ~ art['image']) }}" />
+          <div class="overlayy">
+            <div class="overlay-content">
+              <h4>{{ art.title }}</h4>
+              <p>{{ art.artist }}</p>
+              <div class="overlay-stats">
+                <span><i class="fa-solid fa-heart"></i> {{ art.like_count }}</span>
+                <span><i class="fa-solid fa-download"></i></span>
               </div>
             </div>
-            </div>
-          </a>
+          </div>
         </div>
-        {% endfor %}
-      </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
-      {% else %}
+  <!-- PIXABAY RESULTS -->
+  {% if pixabay %}
+  <h3 class="section-label">From Pixabay</h3>
+  <div class="masonry-grid">
+    {% for art in pixabay %}
+    <div class="masonry-item">
+      <a href="/pixabay/{{ art.id }}?title={{ art.title }}&artist={{ art.artist }}&image={{ art.image }}&likes={{ art.like_count }}">
+        <div class="image-container">
+          <img src="{{ art.image }}" alt="{{ art.title }}" loading="lazy" />
+          <div class="overlayy">
+            <div class="overlay-content">
+              <h4>{{ art.title }}</h4>
+              <p>{{ art.artist }}</p>
+              <div class="overlay-stats">
+                <span><i class="fa-solid fa-heart"></i> {{ art.like_count }}</span>
+                <span><i class="fa-solid fa-download"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
-      <!-- ❌ Empty State -->
-      <div class="empty-state">
-        <h3>No results found 😢</h3>
-        <p>Try searching something else</p>
-      </div>
+  <!-- EMPTY STATE -->
+  {% if not artworks and not pixabay %}
+  <div class="empty-state">
+    <h3>No results found 😢</h3>
+    <p>Try searching something else</p>
+  </div>
+  {% endif %}
 
-      {% endif %}
-    </section>
+</section>
 {% endblock %}

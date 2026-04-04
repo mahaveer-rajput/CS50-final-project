@@ -26,7 +26,7 @@
     <!-- Navbar (always visible) -->
     <nav class="navbar">
       <div class="nav-left">
-        <div class="logo">Pixistan <span>Art Gallery</span></div>
+        <a href="/"><div class="logo">Pixistan <span>Art Gallery</span></div></a>
       </div>
 
       <div class="nav-right">
@@ -80,7 +80,7 @@
     <main>{% block content %}{% endblock %}</main>
 
     <!-- Footer -->
-    <footer>{% include "footer.html" %}</footer>
+    <!-- <footer>{% include "footer.html" %}</footer> -->
 
     <!-- JS -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

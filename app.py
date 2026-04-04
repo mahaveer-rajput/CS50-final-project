@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
+from flask import Flask, render_template, request, redirect, session, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from authlib.integrations.flask_client import OAuth
 from datetime import timedelta
 from flask_wtf import CSRFProtect
 from flask_mail import Mail, Message
+import requests as http_requests
 import secrets
 import time
 import sqlite3
@@ -37,6 +38,35 @@ google = oauth.register(
 
 )
 
+PIXABAY_API_KEY = "49508696-fdf1676025d219a0053669a67"
+ 
+
+def get_pixabay_images(q="art", per_page=10, page=1):
+    url = "https://pixabay.com/api/"
+    params = {
+        "key": PIXABAY_API_KEY,
+        "q": q,
+        "image_type": "photo",
+        "category": "art",
+        "per_page": per_page,
+        "page": page,
+        "safesearch": "true"
+    }
+    res = http_requests.get(url, params=params)
+    data = res.json()
+
+    return [
+        {
+            "id": f"px_{img['id']}",
+            "title": img.get("tags", "Artwork").split(",")[0].title(),
+            "artist": img.get("user", "Unknown"),
+            "image": img["webformatURL"],
+            "like_count": img.get("likes", 0),
+            "source": "pixabay"
+        }
+        for img in data.get("hits", [])
+    ]
+
 
 # Upload folder
 UPLOAD_FOLDER = "static/uploads"
@@ -61,27 +91,92 @@ def index():
     conn.close()
     return render_template("index.html", artworks=artworks)
 
-# search route 
 
 @app.route("/search")
 def search():
-    query = request.args.get("q")
+    query = request.args.get("q", "")
 
     conn = get_db_connection()
-
     artworks = conn.execute(
         """
-        SELECT * FROM artworks
+        SELECT artworks.*,
+        (SELECT COUNT(*) FROM likes WHERE artwork_id = artworks.id) as like_count
+        FROM artworks
         WHERE title LIKE ?
         OR artist LIKE ?
         OR description LIKE ?
         """,
         (f"%{query}%", f"%{query}%", f"%{query}%")
     ).fetchall()
-
     conn.close()
 
-    return render_template("search.html", artworks=artworks, query=query)
+    db_results = [dict(row) for row in artworks]
+
+    # Fetch Pixabay results
+    pixabay_results = get_pixabay_images(q=query, per_page=20, page=1)
+
+    return render_template("search.html", 
+        artworks=db_results, 
+        pixabay=pixabay_results,
+        query=query
+    )
+
+# --------------------------
+# Upload Artwork
+# --------------------------
+
+@app.route("/api/feed")
+def feed():
+    offset = request.args.get("offset", 0, type=int)
+    limit = 10
+    page = (offset // limit) + 1
+
+    # Your DB artworks
+    conn = get_db_connection()
+    artworks = conn.execute("""
+        SELECT artworks.*, 
+        (SELECT COUNT(*) FROM likes WHERE artwork_id = artworks.id) as like_count
+        FROM artworks
+        ORDER BY id DESC
+        LIMIT ? OFFSET ?
+    """, (limit, offset)).fetchall()
+    conn.close()
+
+    db_list = [dict(row) for row in artworks]
+    for item in db_list:
+        item["source"] = "local"
+
+    # Pixabay images
+    pixabay_list = get_pixabay_images(per_page=limit, page=page)
+
+    # Mix them together alternately
+    mixed = []
+    for i in range(max(len(db_list), len(pixabay_list))):
+        if i < len(db_list):
+            mixed.append(db_list[i])
+        if i < len(pixabay_list):
+            mixed.append(pixabay_list[i])
+
+    return jsonify(mixed)
+
+# pixabay artwork page
+@app.route("/pixabay/<image_id>")
+def pixabay_art(image_id):
+    title = request.args.get("title", "Artwork")
+    artist = request.args.get("artist", "Unknown")
+    image = request.args.get("image", "")
+    likes = request.args.get("likes", 0)
+
+    # Fetch related images using title as search query
+    related = get_pixabay_images(q=title, per_page=6, page=1)
+
+    return render_template("pixabay_art.html", 
+        title=title,
+        artist=artist,
+        image=image,
+        likes=likes,
+        related=related
+    )
 
 # --------------------------
 # Upload Artwork
@@ -348,6 +443,7 @@ def register():
             return redirect("/register")
 
         conn.close()
+        flash("Account created! Please login.", "success")
         return redirect("/login")
 
     return render_template("register.html")
@@ -437,6 +533,7 @@ def login():
         conn.close()
 
         if user is None or not check_password_hash(user["password"], password):
+            flash("Invalid username or password", "error")
             return redirect("/login")
 
         # Login successful
@@ -529,8 +626,8 @@ def reset(token):
         conn.commit()
         conn.close()
 
-        flash("Password reset successful. Please Login.")
-        return redirect ("/login")
+        flash("Password reset successful! Please login", "success")
+        return redirect("/login")
     
     conn.close()
     
@@ -545,7 +642,6 @@ def logout():
     session.clear()
     flash("Logged out successfully")
     return redirect("/")
-
 # --------------------------
 # Run app
 # --------------------------

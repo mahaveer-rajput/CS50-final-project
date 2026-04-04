@@ -1,0 +1,52 @@
+{% extends "layout.html" %} {% block content %}
+
+<section class="artwork-container">
+  <div class="artwork-left">
+    <img src="{{ image }}" alt="{{ title }}" />
+  </div>
+
+  <div class="artwork-right">
+    <h1 class="art-title">{{ title }}</h1>
+    <p class="art-artist">by <strong>{{ artist }}</strong></p>
+    <p class="art-desc">Image from Pixabay</p>
+
+    <div class="art-actions">
+      <a href="{{ image }}" download target="_blank">
+        <button class="btn-download">⬇ Download</button>
+      </a>
+    </div>
+
+    <p class="like-count">
+      <i class="fa-solid fa-heart"></i> {{ likes }} likes on Pixabay
+    </p>
+  </div>
+</section>
+
+<!-- RELATED IMAGES -->
+<section class="gallery">
+  <h2 class="gallery-title">Related Artworks</h2>
+
+  <div class="masonry-grid">
+    {% for item in related %}
+    <div class="masonry-item">
+      <div class="image-container">
+        <a href="/pixabay/px_{{ item.id }}?title={{ item.title }}&artist={{ item.artist }}&image={{ item.image }}&likes={{ item.like_count }}">
+          <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy" />
+          <div class="overlayy">
+            <div class="overlay-content">
+              <h4>{{ item.title }}</h4>
+              <p>{{ item.artist }}</p>
+              <div class="overlay-stats">
+                <span><i class="fa-solid fa-heart"></i> {{ item.like_count }}</span>
+                <span><i class="fa-solid fa-download"></i></span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

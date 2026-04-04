@@ -1,4 +1,5 @@
-{% extends "layout.html" %} {% block content %}
+{% extends "layout.html" %}
+ {% block content %}
 <div class="backdrop">
   <!-- HERO -->
   <section class="hero">
@@ -8,7 +9,7 @@
       <h1>Discover Art That Speaks.</h1>
 
       <p>
-        Explore a world of creativity. Buy, sell, and experience stunning
+        Explore a world of creativity. Experience stunning
         artwork from talented creators worldwide.
       </p>
 
@@ -25,38 +26,40 @@
               required
               />
           </div>
-
-
         </div>
       </form>
+    </div>
   </section>
 
   <section class="gallery">
     <h2 class="gallery-title">Featured Art</h2>
 
-    <div class="masonry-grid">
-      {% for art in artworks %}
-      <div class="masonry-item">
-  <div class="image-container">
-    <a href="{{ url_for('artwork', art_id=art['id']) }}">
-      <img src="/static/uploads/{{ art.image }}" alt="{{ art.title }}" />
-    
+    <!-- Grid is now empty — JS fills it -->
+    <div class="masonry-grid" id="feedGrid"></div>
 
-    <div class="overlayy">
-      <div class="overlay-content">
-        <h4>{{ art.title }}</h4>
-        <p>{{ art.artist }}</p>
-        <div class="overlay-stats">
-          <span><i class="fa-solid fa-heart"></i> {{ art.like }}</span>
-          <span><i class="fa-solid fa-download"></i></span>
-        </div>
-      </div>
+    <!-- Loader sits outside the grid, below it -->
+    <div id="loader" style="display:none;">
+    <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
-  </div>
 </div>
 
-      {% endfor %}
-    </div>
   </section>
 </div>
-{% endblock%}
+<!-- Pixabay Modal -->
+<div id="pixabayModal" class="px-modal">
+    <div class="px-modal-content">
+        <button class="px-close" id="closeModal">&times;</button>
+        <img id="modalImg" src="" alt="" />
+        <div class="px-modal-info">
+            <h3 id="modalTitle"></h3>
+            <p id="modalArtist"></p>
+            <div class="px-modal-stats">
+                <span><i class="fa-solid fa-heart"></i> <span id="modalLikes"></span></span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
