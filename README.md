@@ -10,34 +10,34 @@ The main goal of this project was to build a full-stack application that combine
 
 ### Features
 
-- 🔐 User Authentication  
+- User Authentication  
   Users can register, log in, and maintain sessions securely with password hashing.
 
-- 🖼️ Artwork Upload System  
+- Artwork Upload System  
   Users can upload images along with titles, artist names, and descriptions.
 
-- 🎨 Image Gallery (Masonry Grid)  
+- Image Gallery (Masonry Grid)  
   A responsive, Pinterest-style masonry layout to display artworks beautifully.
 
-- ❤️ Like System  
+- Like System  
   Users can like/unlike artworks dynamically with real-time updates.
 
-- 🔍 Search Functionality  
+- Search Functionality  
   Users can search artworks by title, artist, or description.
 
-- 👤 User Profile Page  
+- User Profile Page  
   Each user has a profile where they can:
   - Upload a profile picture  
   - View their uploaded artworks  
 
-- 🖼️ Artwork Detail Page  
+- Artwork Detail Page  
   Clicking an image opens a detailed view with:
   - Full image preview  
   - Artist and description  
   - Like & download options  
   - Related artworks  
 
-- ♾️ Infinite Scroll  
+- Infinite Scroll  
   Loads more artworks dynamically as the user scrolls.
  
 ### Technologies Used
