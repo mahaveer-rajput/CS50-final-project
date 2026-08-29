@@ -1211,3 +1211,39 @@ a{
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
 }
+
+
+/* google button */
+.google-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+
+    padding: 12px 20px;
+
+    background: white;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+
+    color: #3c4043;
+    font-size: 16px;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.google-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #c6c6c6;
+    box-shadow: 0 1px 3px rgba(60, 64, 67, 0.15);
+}
+
+.google-btn img,
+.google-btn svg {
+    width: 20px;
+    height: 20px;
+}

@@ -1,63 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
-    <title>Register</title>
-  </head>
-  <body>
-    <div class="auth-container">
-      <div class="auth-card">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<link
+    href="{{ url_for('static', filename='css/style.css') }}"
+    rel="stylesheet"
+>
+
+<title>Register | Pixistan</title>
+
+
+</head>
+
+<body>
+
+<div class="auth-container">
+    <div class="auth-card">
+
         <h2>Create Account</h2>
         <p class="subtitle">Join us and start your journey</p>
 
+        <!-- Registration Form -->
         <form method="POST">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-          <div class="input-group">
-            <input name="email" placeholder="Email" required />
-          </div>
-
-          <div class="input-group">
-            <input name="username" placeholder="Username" required />
-          </div>
-
-          
-
-          <div class="input-group">
             <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-            />
-          </div>
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
 
-          <div class="input-group">
-            <input
-              type="password"
-              name="confirm"
-              placeholder="Confirm Password"
-              required
-            />
-          </div>
+            <div class="input-group">
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    required
+                >
+            </div>
 
-          <button class="signinup" type="submit">Sign Up</button>
-          <a href="/login/google">Sign up with google</a>
+            <div class="input-group">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <input
+                    type="password"
+                    name="confirm"
+                    placeholder="Confirm Password"
+                    required
+                >
+            </div>
+
+            <button
+                class="signinup"
+                type="submit"
+            >
+                Sign Up
+            </button>
+
         </form>
 
+        <!-- Google Sign Up -->
+        <a href="/login/google" class="google-btn">
+
+            <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+            >
+                <path
+                    fill="#4285F4"
+                    d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 01-1.94 2.94v2.52h3.14c1.84-1.69 2.91-4.18 2.91-7.29z"
+                />
+
+                <path
+                    fill="#34A853"
+                    d="M12 21.5c2.63 0 4.84-.87 6.45-2.36l-3.14-2.52c-.87.58-1.99.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.6A9.75 9.75 0 0012 21.5z"
+                />
+
+                <path
+                    fill="#FBBC05"
+                    d="M6.54 13.51A5.86 5.86 0 016.24 12c0-.52.09-1.03.3-1.51v-2.6H3.3A9.5 9.5 0 002.25 12c0 1.53.37 2.98 1.05 4.11l3.24-2.6z"
+                />
+
+                <path
+                    fill="#EA4335"
+                    d="M12 6.46c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.83 3.55 14.63 2.5 12 2.5a9.75 9.75 0 00-8.7 5.39l3.24 2.6C7.31 8.18 9.46 6.46 12 6.46z"
+                />
+            </svg>
+
+            <span>Continue with Google</span>
+
+        </a>
+
+        <!-- Login Link -->
         <p class="login-link">
-          Already have an account? <a href="{{ url_for('login') }}">Login</a>
+            Already have an account?
+            <a href="{{ url_for('login') }}">Login</a>
         </p>
-      </div>
+
     </div>
-    {% with messages = get_flashed_messages() %} {% if messages %}
-    <div class="flash-container">
-      {% for msg in messages %}
-      <p class="flash-message">{{ msg }}</p>
-      {% endfor %}
-    </div>
-    {% endif %} {% endwith %}
-  </body>
+</div>
+
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+        <div class="flash-container">
+
+            {% for msg in messages %}
+                <p class="flash-message">{{ msg }}</p>
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+{% endwith %}
+</body>
 </html>
