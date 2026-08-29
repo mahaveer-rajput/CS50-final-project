@@ -5,41 +5,42 @@ from authlib.integrations.flask_client import OAuth
 from datetime import timedelta
 from flask_wtf import CSRFProtect
 from flask_mail import Mail, Message
+from dotenv import load_dotenv
 import requests as http_requests
 import secrets
 import time
 import sqlite3
 import os
 
+load_dotenv()  # reads .env into environment variables
+
 app = Flask(__name__)
-app.secret_key = "mahaveer"  # REQUIRED for session
+app.secret_key = os.environ.get("SECRET_KEY")
 app.permanent_session_lifetime = timedelta(days=7)
 
 # send verification email
-
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = "pixistann@gmail.com"
-app.config["MAIL_PASSWORD"] = "nytc swbl dkkg gzgm"
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
 
 mail = Mail(app)
 
 oauth = OAuth(app)
 
 google = oauth.register(
-    name= 'google',
-    client_id='99408685962-3bvkgobd9klg54atmd6b3qiqpg2ulnt9.apps.googleusercontent.com',
-    client_secret='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',
+    name='google',
+    client_id=os.environ.get("GOOGLE_CLIENT_ID"),
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={
         'scope': 'openid email profile'
     }
-
 )
 
-PIXABAY_API_KEY = "49508696-fdf1676025d219a0053669a67"
- 
+PIXABAY_API_KEY = os.environ.get("PIXABAY_API_KEY")
+
 
 def get_pixabay_images(q="art", per_page=10, page=1):
     url = "https://pixabay.com/api/"
