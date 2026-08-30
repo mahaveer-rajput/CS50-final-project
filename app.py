@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, session, flash, jsonify, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from authlib.integrations.flask_client import OAuth
@@ -469,9 +469,10 @@ def inject_user():
 
 @app.route("/login/google")
 def google_login():
-    nonce = secrets.token_urlsafe(16)      # Generate random nonce
-    session['google_nonce'] = nonce        # Store it in session
-    return google.authorize_redirect("http://127.0.0.1:5000/callback", nonce=nonce)
+    nonce = secrets.token_urlsafe(16)   # Generate random nonce
+    session['google_nonce'] = nonce     # Store it in session
+    redirect_uri = url_for('google_callback', _external=True)
+    return google.authorize_redirect(redirect_uri, nonce=nonce)
 
 @app.route("/callback")
 def callback():
