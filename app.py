@@ -471,7 +471,7 @@ def inject_user():
 def google_login():
     nonce = secrets.token_urlsafe(16)   # Generate random nonce
     session['google_nonce'] = nonce     # Store it in session
-    redirect_uri = url_for('google_callback', _external=True)
+    redirect_uri = url_for('callback', _external=True)
     return google.authorize_redirect(redirect_uri, nonce=nonce)
 
 @app.route("/callback")
