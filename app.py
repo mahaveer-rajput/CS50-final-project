@@ -12,7 +12,8 @@ import time
 import sqlite3
 import os
 
-load_dotenv()  # reads .env into environment variables
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))  # reads .env into environment variables
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
@@ -78,8 +79,6 @@ csrf = CSRFProtect(app)
 # Database connection helper
 # --------------------------
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-load_dotenv()  # reads .env into environment variables
 def get_db_connection():
     conn = sqlite3.connect(os.path.join(BASE_DIR, "gallery.db"), timeout=5)
     conn.row_factory = sqlite3.Row
