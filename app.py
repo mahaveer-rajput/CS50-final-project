@@ -79,7 +79,7 @@ csrf = CSRFProtect(app)
 # --------------------------
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
+load_dotenv()  # reads .env into environment variables
 def get_db_connection():
     conn = sqlite3.connect(os.path.join(BASE_DIR, "gallery.db"), timeout=5)
     conn.row_factory = sqlite3.Row
