@@ -73,6 +73,7 @@ def get_pixabay_images(q="art", per_page=10, page=1):
 # Upload folder
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 csrf = CSRFProtect(app)
 
 # --------------------------
@@ -494,9 +495,10 @@ def callback():
     ).fetchone()
 
     if not user:
+        unusable_password = generate_password_hash(secrets.token_hex(32))
         conn.execute(
-            "INSERT INTO users (username, email) VALUES (?, ?)",
-            (name, email)
+            "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+            (name, email, unusable_password)
         )
         conn.commit()
 
@@ -579,7 +581,7 @@ def forgot():
                 recipients=[email]
             )
 
-            reset_link = f"http://127.0.0.1:5000/reset/{token}"
+            reset_link = url_for('reset', token=token, _external=True)
 
             msg.body = f"""
             Click the link below to reset your password:
@@ -651,5 +653,4 @@ def logout():
 # --------------------------
 if __name__ == "__main__":
     # Make sure upload folder exists
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.run(host="0.0.0.0", port=5000, debug=True)
