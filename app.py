@@ -311,6 +311,9 @@ def like(art_id):
 # --------------------------
 @app.route("/profile", methods=['GET', 'POST'])
 def profile():
+    if "user_id" not in session:
+        flash("You must login to view your profile")
+        return redirect("/login")
     
     conn = get_db_connection()
 
