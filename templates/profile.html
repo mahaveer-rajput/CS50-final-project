@@ -6,9 +6,7 @@
     <div class="profile-left">
       <div class="profile-pic">
         {% if user['profile_pic'] %}
-        <img
-          src="{{ url_for('static', filename='uploads/' ~ user['profile_pic']) }}"
-        />
+        <img src="{{ user['profile_pic'] }}" />
         {% else %}
         <img src="{{ url_for('static', filename='uploads/acc.png') }}" />
         {% endif %}
@@ -43,9 +41,7 @@
       {% for art in artworks %}
       <div class="card">
         <a href="{{ url_for('artwork', art_id=art['id']) }}">
-          <img
-            src="{{ url_for('static', filename='uploads/' ~ art['image']) }}"
-          />
+         <img src="{{ art['image'] }}" />
         </a>
         <div class="card-info">
           <h4>{{ art['title'] }}</h4>

@@ -103,9 +103,7 @@ async function loadMore() {
     const div = document.createElement("div");
     div.className = "masonry-item";
 
-    const imageSrc =
-      art.source === "pixabay" ? art.image : `/static/uploads/${art.image}`;
-
+    const imageSrc = art.image;
     let artUrl;
     if (art.source === "pixabay") {
       const params = new URLSearchParams({

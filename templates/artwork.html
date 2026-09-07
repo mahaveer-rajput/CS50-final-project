@@ -3,7 +3,7 @@
 <section class="artwork-container">
   <!-- IMAGE -->
   <div class="artwork-left">
-    <img src="{{ url_for('static', filename='uploads/' ~ art['image']) }}" />
+    <img src="{{ art['image'] }}" />
   </div>
 
   <!-- DETAILS -->
@@ -27,10 +27,7 @@
       </button>
 
       <!-- DOWNLOAD -->
-      <a
-        href="{{ url_for('static', filename='uploads/' ~ art['image']) }}"
-        download
-      >
+      <a href="{{ art['image'] }}" download>
         <button class="btn-download">⬇ Download</button>
       </a>
     </div>
@@ -48,9 +45,7 @@
     <div class="masonry-item">
       <div class="image-container">
         <a href="{{ url_for('artwork', art_id=item['id']) }}">
-          <img
-            src="{{ url_for('static', filename='uploads/' ~ item['image']) }}"
-          />
+          <img src="{{ item['image'] }}" />
           <div class="overlayy">
             <div class="overlay-content">
               <h4>{{ art.title }}</h4>

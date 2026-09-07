@@ -12,8 +12,19 @@ import time
 import sqlite3
 import os
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, ".env"))  # reads .env into environment variables
+
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET")
+)
+
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
@@ -202,15 +213,14 @@ def upload():
             return redirect("/upload")
 
         # Save image
-        filename = image.filename
-        file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-        image.save(file_path)
+        upload_result = cloudinary.uploader.upload(image)
+        image_url = upload_result["secure_url"]
 
         # Insert artwork into database
         conn = get_db_connection()
         conn.execute(
             "INSERT INTO artworks (title, artist, description, image, user_id) VALUES (?, ?, ?, ?, ?)",
-            (title, artist, description, filename, session["user_id"])
+            (title, artist, description, image_url, session["user_id"])
         )
         conn.commit()
         conn.close()
@@ -322,46 +332,27 @@ def profile():
 
         if file and file.filename != "":
 
-            # 1. Get old profile pic from DB
-            old = conn.execute(
-                "SELECT profile_pic FROM users WHERE id = ?",
-                (session["user_id"],)
-            ).fetchone()
+            # Upload new profile picture to Cloudinary
+            upload_result = cloudinary.uploader.upload(file)
+            image_url = upload_result["secure_url"]
 
-            if old and old["profile_pic"]:
-                old_path = os.path.join(app.config["UPLOAD_FOLDER"], old["profile_pic"])
-                
-                # 2. Delete old file if it exists
-                if os.path.exists(old_path):
-                    os.remove(old_path)
-
-            # 3. Save new file
-            filename = secure_filename(file.filename)
-
-            # (Optional but recommended) make filename unique
-            import uuid
-            filename = str(uuid.uuid4()) + "_" + filename
-
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-
-            # 4. Update DB
             conn.execute(
                 "UPDATE users SET profile_pic = ? WHERE id = ?",
-                (filename, session["user_id"])
+                (image_url, session["user_id"])
             )
 
             conn.commit()
 
-    # Get user info 
+    # Get user info
     user = conn.execute(
         "SELECT * FROM users WHERE id = ?",
         (session["user_id"],)
     ).fetchone()
 
-    # Get user info 
+    # Get user's artworks
     artworks = conn.execute(
-    "SELECT * FROM artworks WHERE user_id = ?",
-    (session["user_id"],)
+        "SELECT * FROM artworks WHERE user_id = ?",
+        (session["user_id"],)
     ).fetchall()
 
     conn.close()
