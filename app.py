@@ -11,13 +11,12 @@ import secrets
 import time
 import sqlite3
 import os
-
+import cloudinary
+import cloudinary.uploader
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, ".env"))  # reads .env into environment variables
 
-import cloudinary
-import cloudinary.uploader
 
 cloudinary.config(
     cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
